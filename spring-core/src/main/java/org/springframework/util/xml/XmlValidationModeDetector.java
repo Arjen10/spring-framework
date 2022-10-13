@@ -100,10 +100,12 @@ public class XmlValidationModeDetector {
 				if (!StringUtils.hasText(content)) {
 					continue;
 				}
+				//判断是不是DTD
 				if (hasDoctype(content)) {
 					isDtdValidated = true;
 					break;
 				}
+				//判断是不是XSD
 				if (hasOpeningTag(content)) {
 					// End of meaningful data...
 					break;
@@ -137,7 +139,10 @@ public class XmlValidationModeDetector {
 		if (this.inComment) {
 			return false;
 		}
+		//XSD 模式content =  <beans xmlns="http://www.springframework.org/schema/beans"
 		int openTagIndex = content.indexOf('<');
+		//判断有 < 这个符号，验证content.length() > openTagIndex + 1 为了避免出现String index out of range: xx 错误
+		//最后一个就是判断 < 这个符号后面的字符是不是字母
 		return (openTagIndex > -1 && (content.length() > openTagIndex + 1) &&
 				Character.isLetter(content.charAt(openTagIndex + 1)));
 	}
@@ -148,6 +153,7 @@ public class XmlValidationModeDetector {
 	 * <p>This method takes the current "in comment" parsing state into account.
 	 */
 	private String consumeCommentTokens(String line) {
+		//如果没有xml的注释，直接返回
 		int indexOfStartComment = line.indexOf(START_COMMENT);
 		if (indexOfStartComment == -1 && !line.contains(END_COMMENT)) {
 			return line;

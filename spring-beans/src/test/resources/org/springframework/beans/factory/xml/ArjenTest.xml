@@ -9,4 +9,14 @@
 		<property name="age" value="24"/>
 	</bean>
 
+	<bean id="fatherBean" abstract="true" class="org.springframework.beans.testfixture.beans.ArjenTest">
+		<property name="name" value="Arjen"/>
+		<property name="age" value="24"/>
+	</bean>
+
+	<bean id="sonBean" parent="fatherBean">
+		<property name="name" value="ArjenSon"/>
+		<property name="age" value="12"/>
+	</bean>
+
 </beans>

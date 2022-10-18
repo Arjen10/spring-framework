@@ -1,6 +1,7 @@
 package org.springframework.beans.factory.xml;
 
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.testfixture.beans.ArjenTest;
 import org.springframework.core.io.ClassPathResource;
 
@@ -12,10 +13,13 @@ public class ArjenTests {
 
 	private static final String PATH = "org/springframework/beans/factory/xml/ArjenTest.xml";
 
-	public static void main(String[] args) {
+	@Test
+	public void testXmlBeanFactory() {
 		XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource(PATH));
-		ArjenTest arjen = beanFactory.getBean("arjen", ArjenTest.class);
-		System.out.println(arjen);
+		ArjenTest fatherBean = beanFactory.getBean("fatherBean", ArjenTest.class);
+		ArjenTest sonBean = beanFactory.getBean("sonBean", ArjenTest.class);
+		System.out.println(fatherBean);
+		System.out.println(sonBean);
 	}
 
 }

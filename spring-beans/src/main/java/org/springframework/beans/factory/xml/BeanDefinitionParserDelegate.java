@@ -516,12 +516,13 @@ public class BeanDefinitionParserDelegate {
 		//这些属性都要忘了。。。
 		//parent属性，如配置多个数据源时。
 		//类似于子类、父类关系，如果父bean定义为abstract="true"的那就不能被初始化，子bean在父bean的基础上进行变更
-		//TODO 看到了bean标签的解析
 		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
 		try {
+			//将className封装成GenericBeanDefinition对象
+			//这一不仅仅处理了className和parent
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
@@ -566,35 +567,51 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
+		//spring-4.*不支持singleton=false或者singleton=true写法了
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
+		//解析scope
+		//singleton 为单例模式
+		//prototype 原型模式，使用多少次就实例化多少次
 		else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
 		}
+		//TODO 这里暂时搞不懂，传过来的参数就是null
 		else if (containingBean != null) {
 			// Take default from containing bean in case of an inner bean definition.
 			bd.setScope(containingBean.getScope());
 		}
 
+		//解析abstract属性
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
+		//解析lazy-init属性
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
 		if (isDefaultValue(lazyInit)) {
+			//如果是默认加载方式，那就false
+			//所以在Spring中bean默认都不是懒加载，默认都是及时加载
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
+		//解析autowire属性
+		//autowire好东西，但是维护起来有点打脑壳
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
+		//depends-on 如果需要其他bean，那么就需要把这个标签配置上去
 		if (ele.hasAttribute(DEPENDS_ON_ATTRIBUTE)) {
 			String dependsOn = ele.getAttribute(DEPENDS_ON_ATTRIBUTE);
 			bd.setDependsOn(StringUtils.tokenizeToStringArray(dependsOn, MULTI_VALUE_ATTRIBUTE_DELIMITERS));
 		}
 
+		//autowire-candidate属性设置为false
+		//容器在查找自动装配对象时，将不考虑该bean
+		//即该bean不会被作为其它bean自动装配的候选者，但该bean本身还是可以使用自动装配来注入其它bean的。
+		//TODO 明天继续
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if (isDefaultValue(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();

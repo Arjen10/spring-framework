@@ -16,9 +16,7 @@ public class ArjenTests {
 	@Test
 	public void testXmlBeanFactory() {
 		XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource(PATH));
-		ArjenTest fatherBean = beanFactory.getBean("fatherBean", ArjenTest.class);
 		ArjenTest sonBean = beanFactory.getBean("sonBean", ArjenTest.class);
-		System.out.println(fatherBean);
 		System.out.println(sonBean);
 	}
 

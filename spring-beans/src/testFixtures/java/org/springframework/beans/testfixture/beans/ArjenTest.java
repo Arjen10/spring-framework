@@ -11,7 +11,19 @@ public class ArjenTest {
 
 	private Integer age;
 
+	private ArjenCat cat;
+
 	public ArjenTest() {
+	}
+
+	public ArjenTest(ArjenCat cat) {
+		this.cat = cat;
+	}
+
+	public ArjenTest(String name, Integer age, ArjenCat cat) {
+		this.name = name;
+		this.age = age;
+		this.cat = cat;
 	}
 
 	public ArjenTest(String name, Integer age) {
@@ -35,11 +47,21 @@ public class ArjenTest {
 		this.age = age;
 	}
 
+	public ArjenCat getCat() {
+		return cat;
+	}
+
+	public void setCat(ArjenCat cat) {
+		this.cat = cat;
+	}
+
 	@Override
 	public String toString() {
 		return "ArjenTest{" +
 				"name='" + name + '\'' +
 				", age=" + age +
+				", cat=" + cat +
 				'}';
 	}
+
 }

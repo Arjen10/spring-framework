@@ -2,6 +2,7 @@ package org.springframework.beans.factory.xml;
 
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.testfixture.beans.ArjenCat;
 import org.springframework.beans.testfixture.beans.ArjenTest;
 import org.springframework.core.io.ClassPathResource;
 
@@ -16,7 +17,7 @@ public class ArjenTests {
 	@Test
 	public void testXmlBeanFactory() {
 		XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource(PATH));
-		ArjenTest sonBean = beanFactory.getBean("sonBean", ArjenTest.class);
+		ArjenCat sonBean = beanFactory.getBean("constructorBean", ArjenCat.class);
 		System.out.println(sonBean);
 	}
 

@@ -435,7 +435,7 @@ public class BeanDefinitionParserDelegate {
 			//检查beanName唯一性
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		//BeanDefinitionReaderUtils.createBeanDefinition() 得到了一个 GenericBeanDefinition
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			//如果没得beanName，就给这个bean安排一个Name
@@ -525,14 +525,18 @@ public class BeanDefinitionParserDelegate {
 			//这一不仅仅处理了className和parent
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			//这个方法将xml中的bean定义处理解析封装成对象
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
 			parseMetaElements(ele, bd);
+			//处理Lookup method属性，这个一般用于可插拔的情况
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			//处理构造方法元素
 			parseConstructorArgElements(ele, bd);
+			//处理属性元素
 			parsePropertyElements(ele, bd);
 			parseQualifierElements(ele, bd);
 
@@ -611,7 +615,6 @@ public class BeanDefinitionParserDelegate {
 		//autowire-candidate属性设置为false
 		//容器在查找自动装配对象时，将不考虑该bean
 		//即该bean不会被作为其它bean自动装配的候选者，但该bean本身还是可以使用自动装配来注入其它bean的。
-		//TODO 明天继续
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if (isDefaultValue(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();
@@ -624,6 +627,7 @@ public class BeanDefinitionParserDelegate {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
 
+		//解析PRIMARY属性
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
@@ -815,6 +819,7 @@ public class BeanDefinitionParserDelegate {
 				else {
 					try {
 						this.parseState.push(new ConstructorArgumentEntry(index));
+						//解析属性值
 						Object value = parsePropertyValue(ele, bd, null);
 						ConstructorArgumentValues.ValueHolder valueHolder = new ConstructorArgumentValues.ValueHolder(value);
 						if (StringUtils.hasLength(typeAttr)) {
@@ -824,6 +829,7 @@ public class BeanDefinitionParserDelegate {
 							valueHolder.setName(nameAttr);
 						}
 						valueHolder.setSource(extractSource(ele));
+						//index重复了就抛异常
 						if (bd.getConstructorArgumentValues().hasIndexedArgumentValue(index)) {
 							error("Ambiguous constructor-arg entries for index " + index, ele);
 						}
@@ -875,6 +881,7 @@ public class BeanDefinitionParserDelegate {
 				error("Multiple 'property' definitions for property '" + propertyName + "'", ele);
 				return;
 			}
+			//先处理element再处理value
 			Object val = parsePropertyValue(ele, bd, propertyName);
 			PropertyValue pv = new PropertyValue(propertyName, val);
 			parseMetaElements(ele, pv);
@@ -955,7 +962,9 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 
+		//ref属性
 		boolean hasRefAttribute = ele.hasAttribute(REF_ATTRIBUTE);
+		//value属性
 		boolean hasValueAttribute = ele.hasAttribute(VALUE_ATTRIBUTE);
 		if ((hasRefAttribute && hasValueAttribute) ||
 				((hasRefAttribute || hasValueAttribute) && subElement != null)) {

@@ -14,6 +14,9 @@
 		<property name="catColor" value="yellow"/>
 	</bean>
 
+	<!--如果去获取一个抽象的bean，spring会抛出下面的异常-->
+	<!--org.springframework.beans.factory.BeanIsAbstractException:
+		Error creating bean with name 'fatherBean': Bean definition is abstract-->
 	<bean id="fatherBean" abstract="true"
 		  class="org.springframework.beans.testfixture.beans.ArjenTest">
 		<property name="name" value="Arjen"/>
@@ -22,11 +25,25 @@
 
 	<!-- autowire="byType" 是通过set方法注入-->
 	<!-- autowire="constructor" 是通过构造方法注入-->
-	<bean id="sonBean" parent="fatherBean" autowire="constructor">
+	<bean id="sonBean" parent="fatherBean">
+		<constructor-arg type="org.springframework.beans.testfixture.beans.ArjenCat" ref="arjenCat"/>
 		<property name="name" value="ArjenSon"/>
 		<property name="age" value="12"/>
 		<!--依赖注入 建议以后使用autowire可以避免依赖注入的硬编码-->
 		<!--<property name="cat" ref="arjenCat"/>-->
+	</bean>
+
+	<!--构造方法声明bean-->
+	<bean id="constructorBean" class="org.springframework.beans.testfixture.beans.ArjenCat">
+		<constructor-arg index="0" value="kite"/>
+		<constructor-arg index="1" value="red"/>
+		<constructor-arg index="2">
+			<list value-type="java.lang.Integer">
+				<value>1</value>
+				<value>2</value>
+				<value>3</value>
+			</list>
+		</constructor-arg>
 	</bean>
 
 </beans>

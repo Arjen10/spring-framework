@@ -15,13 +15,16 @@ public class ArjenCat {
 
 	private List<Integer> testSub;
 
+	private ArjenCat cat;
+
 	public ArjenCat() {
 	}
 
-	public ArjenCat(String catName, String catColor, List<Integer> testSub) {
+	public ArjenCat(String catName, String catColor, List<Integer> testSub, ArjenCat cat) {
 		this.catName = catName;
 		this.catColor = catColor;
 		this.testSub = testSub;
+		this.cat = cat;
 	}
 
 	public String getCatName() {
@@ -40,12 +43,29 @@ public class ArjenCat {
 		this.catColor = catColor;
 	}
 
+	public List<Integer> getTestSub() {
+		return testSub;
+	}
+
+	public void setTestSub(List<Integer> testSub) {
+		this.testSub = testSub;
+	}
+
+	public ArjenCat getCat() {
+		return cat;
+	}
+
+	public void setCat(ArjenCat cat) {
+		this.cat = cat;
+	}
+
 	@Override
 	public String toString() {
 		return "ArjenCat{" +
 				"catName='" + catName + '\'' +
 				", catColor='" + catColor + '\'' +
+				", testSub=" + testSub +
+				", cat=" + cat +
 				'}';
 	}
-
 }

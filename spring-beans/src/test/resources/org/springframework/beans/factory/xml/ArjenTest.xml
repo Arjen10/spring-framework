@@ -44,6 +44,7 @@
 				<value>3</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg index="3" ref="arjenCat"/>
 	</bean>
 
 </beans>
